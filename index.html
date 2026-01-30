@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BSSE Portal - NFC IET</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #7B1E2E 0%, #5A1521 100%);
+            min-height: 100vh;
+        }
+
+        /* Mobile First Design */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            margin: -15px -15px 20px -15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7B1E2E;
+            font-size: 20px;
+        }
+
+        .header-text h1 {
+            color: white;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .header-text p {
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Login Box */
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin: auto 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-title i {
+            font-size: 50px;
+            color: #7B1E2E;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .login-title h2 {
+            color: #7B1E2E;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .login-title p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7B1E2E;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+
+        input:focus {
+            border-color: #7B1E2E;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(123, 30, 46, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: #7B1E2E;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .developer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .developer strong {
+            color: #7B1E2E;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .student-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .student-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #7B1E2E, #1E7B3A);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .student-details h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .student-details p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .gpa-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .gpa-box {
+            background: linear-gradient(135deg, rgba(123, 30, 46, 0.05), rgba(30, 123, 58, 0.05));
+            padding: 15px 10px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(123, 30, 46, 0.1);
+        }
+
+        .gpa-box h4 {
+            color: #7B1E2E;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .gpa-box p {
+            color: #666;
+            font-size: 11px;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 18px;
+            margin: 20px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item.highlight {
+            background: rgba(123, 30, 46, 0.1);
+            border-left: 4px solid #7B1E2E;
+        }
+
+        .result-info h4 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .result-info p {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .gpa-badge {
+            background: #7B1E2E;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        /* Error message */
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon">
+                <i class="fas fa-university"></i>
+            </div>
+            <div class="header-text">
+                <h1>BSSE Portal</h1>
+                <p>NFC IET Multan</p>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div id="loginScreen">
+            <div class="login-card">
+                <div class="login-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>Student Login</h2>
+                    <p>Semester 1 Results</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="rollNo" placeholder="e.g., 2k25-BSSE-101" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password (Form No)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" placeholder="Enter form number" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+
+                    <div class="error" id="errorMsg">
+                        <i class="fas fa-exclamation-circle"></i> Invalid Roll Number or Form Number
+                    </div>
+                </form>
+
+                <div class="developer">
+                    Developed by <strong>Rana Numan</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <div class="top-bar">
+                <button class="back-btn" onclick="logout()">
+                    <i class="fas fa-arrow-left"></i> Logout
+                </button>
+            </div>
+
+            <div class="student-info" id="studentCard">
+                <!-- Filled by JS -->
+            </div>
+
+            <h3 class="section-title">
+                <i class="fas fa-list-ol"></i> Class Results (56 Students)
+            </h3>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name or roll..." onkeyup="searchStudents()">
+                <button class="login-btn" style="width: auto; padding: 12px 20px;" onclick="searchStudents()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="result-list" id="resultList">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const students = [
+            {s:1, r:"2k25-BSSE-101", f:"549", n:"Roohi Bano", gpa:3.92},
+            {s:2, r:"2k25-BSSE-102", f:"746", n:"Meerab Suhail", gpa:3.88},
+            {s:3, r:"2k25-BSSE-103", f:"2838", n:"Muhammad Ali Bakhat", gpa:3.85},
+            {s:4, r:"2k25-BSSE-104", f:"2000", n:"Seerat ul Zahra", gpa:3.82},
+            {s:5, r:"2k25-BSSE-105", f:"1951", n:"Aina Anjum", gpa:3.79},
+            {s:6, r:"2k25-BSSE-106", f:"2089", n:"Syeda Bisma Sibtain", gpa:3.76},
+            {s:7, r:"2k25-BSSE-107", f:"955", n:"Maria Sanaullah", gpa:3.73},
+            {s:8, r:"2k25-BSSE-108", f:"1465", n:"Esha Azhar", gpa:3.70},
+            {s:9, r:"2k25-BSSE-109", f:"2407", n:"Zainab Qadeer", gpa:3.67},
+            {s:10, r:"2k25-BSSE-110", f:"2908", n:"Sabtain Mushtaq", gpa:3.64},
+            {s:11, r:"2k25-BSSE-111", f:"939", n:"Muhammad Zain Sajjad", gpa:3.61},
+            {s:12, r:"2k25-BSSE-112", f:"1497", n:"Abdul Basit", gpa:3.58},
+            {s:13, r:"2k25-BSSE-113", f:"2892", n:"Asad Ullah", gpa:3.55},
+            {s:14, r:"2k25-BSSE-114", f:"2387", n:"Khubaib Afzal", gpa:3.52},
+            {s:15, r:"2k25-BSSE-115", f:"2292", n:"Muhammad Khan", gpa:3.49},
+            {s:16, r:"2k25-BSSE-116", f:"2245", n:"Manahil Eman", gpa:3.46},
+            {s:17, r:"2k25-BSSE-117", f:"37", n:"Hania Mudasar", gpa:3.43},
+            {s:18, r:"2k25-BSSE-118", f:"1601", n:"Muhammad Numan", gpa:3.40},
+            {s:19, r:"2k25-BSSE-119", f:"724", n:"Muhammad Bilal", gpa:3.37},
+            {s:20, r:"2k25-BSSE-120", f:"1296", n:"Syed Hussain Ali Abidi", gpa:3.34},
+            {s:21, r:"2k25-BSSE-121", f:"556", n:"Aqsa Asif", gpa:3.31},
+            {s:22, r:"2k25-BSSE-122", f:"1982", n:"Hadia Zainab", gpa:3.28},
+            {s:23, r:"2k25-BSSE-123", f:"1079", n:"Haider Jaan", gpa:3.25},
+            {s:24, r:"2k25-BSSE-124", f:"2517", n:"Muhammad Ahmad Khan", gpa:3.22},
+            {s:25, r:"2k25-BSSE-125", f:"2520", n:"Mahnoor Zahid", gpa:3.19},
+            {s:26, r:"2k25-BSSE-126", f:"2896", n:"Malaika Muzaffar", gpa:3.16},
+            {s:27, r:"2k25-BSSE-127", f:"2678", n:"Muhammad Taha Younas", gpa:3.13},
+            {s:28, r:"2k25-BSSE-128", f:"1571", n:"Ahmad Ansar", gpa:3.10},
+            {s:29, r:"2k25-BSSE-129", f:"2136", n:"Nazar Abbas", gpa:3.07},
+            {s:30, r:"2k25-BSSE-130", f:"287", n:"Junaid Naveed", gpa:3.04},
+            {s:31, r:"2k25-BSSE-131", f:"144", n:"Mahad Bilal", gpa:3.01},
+            {s:32, r:"2k25-BSSE-132", f:"1304", n:"Muhammad Hamid", gpa:2.98},
+            {s:33, r:"2k25-BSSE-133", f:"851", n:"Muhammad Aizaz", gpa:2.95},
+            {s:34, r:"2k25-BSSE-134", f:"1940", n:"Syed Muhammad Faseeh", gpa:2.92},
+            {s:35, r:"2k25-BSSE-135", f:"942", n:"Muhammad Mudassir", gpa:2.89},
+            {s:36, r:"2k25-BSSE-136", f:"228", n:"Ali Abbas", gpa:2.86},
+            {s:37, r:"2k25-BSSE-137", f:"2856", n:"Meerab Mubarik", gpa:2.83},
+            {s:38, r:"2k25-BSSE-138", f:"1947", n:"Zain Ali Nasir", gpa:2.80},
+            {s:39, r:"2k25-BSSE-139", f:"2078", n:"Saim Nadeem", gpa:2.77},
+            {s:40, r:"2k25-BSSE-140", f:"1401", n:"Noor Fatima", gpa:2.74},
+            {s:41, r:"2k25-BSSE-141", f:"1927", n:"Warda Rauf", gpa:2.71},
+            {s:42, r:"2k25-BSSE-142", f:"2487", n:"Adan Laique", gpa:2.68},
+            {s:43, r:"2k25-BSSE-143", f:"791", n:"Abdul Salam", gpa:2.65},
+            {s:44, r:"2k25-BSSE-144", f:"2666", n:"Muhammad Zohaib", gpa:2.62},
+            {s:45, r:"2k25-BSSE-145", f:"2669", n:"Marriam Sabir", gpa:2.59},
+            {s:46, r:"2k25-BSSE-146", f:"2626", n:"Arooba Tahir", gpa:2.56},
+            {s:47, r:"2k25-BSSE-147", f:"1934", n:"Kashaf Rauf", gpa:2.53},
+            {s:48, r:"2k25-BSSE-148", f:"2058", n:"Laraib Shah", gpa:2.50},
+            {s:49, r:"2k25-BSSE-149", f:"2065", n:"Muhammad Rehman", gpa:2.47},
+            {s:50, r:"2k25-BSSE-150", f:"2920", n:"Alishba Fayyaz", gpa:2.44},
+            {s:51, r:"2k25-BSSE-151", f:"1617", n:"Fawad Hussain", gpa:2.41},
+            {s:52, r:"2k25-BSSE-152", f:"829", n:"Areej Fatima", gpa:2.38},
+            {s:53, r:"2k25-BSSE-153", f:"552", n:"Muhammad Ahmad", gpa:2.35},
+            {s:54, r:"2k25-BSSE-154", f:"2474", n:"Ameer Hamza", gpa:2.32},
+            {s:55, r:"2k25-BSSE-155", f:"2353", n:"Mehak Fatima", gpa:2.29},
+            {s:56, r:"2k25-BSSE-156", f:"3076", n:"Sharjil Ahmad", gpa:2.26}
+        ];
+
+        let currentStudent = null;
+
+        function getGrade(gpa) {
+            if(gpa>=3.70)return'+';
+            if(gpa>=3.30)return'B+';
+            if(gpa>=3.00)return'B';
+            if(gpa>=2.70)return'C+';
+            if(gpa>=2.30)return'C';
+            if(gpa>=2.00)return'D';
+            return'F';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const roll = document.getElementById('rollNo').value.toLowerCase();
+            const pass = document.getElementById('password').value;
+
+            currentStudent = students.find(s => s.r.toLowerCase() === roll && s.f === pass);
+
+            if(currentStudent) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+                showDashboard();
+            } else {
+                document.getElementById('errorMsg').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('errorMsg').classList.remove('show');
+                }, 3000);
+            }
+        });
+
+        function showDashboard() {
+            // Student Card
+            const avatar = currentStudent.n.split(' ').map(n => n[0]).join('');
+            document.getElementById('studentCard').innerHTML = `
+                <div class="student-header">
+                    <div class="avatar">${avatar}</div>
+                    <div class="student-details">
+                        <h3>${currentStudent.n}</h3>
+                        <p>${currentStudent.r}</p>
+                    </div>
+                </div>
+                <div class="gpa-grid">
+                    <div class="gpa-box">
+                        <h4>${currentStudent.gpa.toFixed(2)}</h4>
+                        <p>GPA/CGPA</p>
+                    </div>
+                    <div class="gpa-box">
+                        <h4>${getGrade(currentStudent.gpa)}</h4>
+                        <p>Grade</p>
+                    </div>
+                    <div class="gpa-box">
+                        <h4>${currentStudent.s}</h4>
+                        <p>Rank</p>
+                    </div>
+                </div>
+            `;
+
+            renderList(students);
+        }
+
+        function renderList(list) {
+            const html = list.map(s => {
+                const isCurrent = s.r === currentStudent.r;
+                const status = s.gpa >= 2.00 ? '<span class="status-badge status-pass">Pass</span>' : '<span class="status-badge" style="background:#f8d7da;color:#721c24">Fail</span>';
+                return `
+                    <div class="result-item ${isCurrent ? 'highlight' : ''}">
+                        <div class="result-info">
+                            <h4>${s.s}. ${s.n}</h4>
+                            <p>${s.r} | Form: ${s.f}</p>
+                        </div>
+                        <div style="text-align:right">
+                            <span class="gpa-badge">${s.gpa.toFixed(2)}</span>
+                            ${status}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('resultList').innerHTML = html;
+        }
+
+        function searchStudents() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = students.filter(s => 
+                s.n.toLowerCase().includes(query) || 
+                s.r.toLowerCase().includes(query)
+            );
+            renderList(filtered);
+        }
+
+        function logout() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
